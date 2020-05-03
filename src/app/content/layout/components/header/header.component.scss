@@ -1,0 +1,29 @@
+:host {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.title-row {
+  margin-bottom: 5px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  .btn-settings {
+    cursor: pointer;
+    opacity: .4;
+    width: 50px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+      opacity: 1;
+      transition: opacity 150ms ease-in-out;
+    }
+  }
+}

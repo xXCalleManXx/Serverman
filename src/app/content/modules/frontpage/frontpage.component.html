@@ -1,0 +1,18 @@
+<div class="container">
+
+  <div class="row">
+    <ng-container *ngIf="servers$|async as servers">
+      <app-server-widget
+        [server]="server"
+        class="col-md-6 col-lg-4 col-xl-3"
+        *ngFor="let server of servers"
+      ></app-server-widget>
+      <div class="col-md-12 no-servers" *ngIf="servers.length === 0">
+        <div class="row">
+          <h3 class="col-12 text-center">You don't have any servers...</h3>
+          <h3 (click)="createServer()" class="btn btn-success btn-lg col-6 offset-3">Create your first server!</h3>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

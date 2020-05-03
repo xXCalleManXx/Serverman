@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.top-content {
+  margin-top: 25px;
+  flex: 1 0 auto;
+}
+
+app-footer {
+  flex-shrink: 0;
+  margin-bottom: 10px;
+}

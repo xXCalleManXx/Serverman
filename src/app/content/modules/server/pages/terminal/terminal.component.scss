@@ -1,0 +1,57 @@
+.window {
+  border-radius: 3px;
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+
+  .terminal-header {
+    display: flex;
+    height: 56px;
+
+    .terminal-dots {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 96px;
+      letter-spacing: -12px;
+      line-height: 0;
+      width: 72px;
+      margin-top: 1px;
+      margin-left: 13px;
+    }
+    h1 {
+      flex-grow: 1;
+      text-align: right;
+      margin: 9px 15px 0 0;
+    }
+  }
+}
+
+.terminal {
+  margin: 20px;
+  font-family: monospace;
+  font-size: 16px;
+  color: #fff;
+
+  .command {
+    white-space: nowrap;
+    overflow: hidden;
+
+    &:before {
+      content: '$ ';
+      color: #fff;
+    }
+  }
+
+  .log {
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+
+.go-back {
+  margin: 5px 0;
+
+  fa-icon {
+    margin-right: 5px;
+  }
+}

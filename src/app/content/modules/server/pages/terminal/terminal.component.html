@@ -1,0 +1,28 @@
+<div class="container">
+  <a class="col-md-12 go-back" [routerLink]="'/'"><fa-icon [icon]="['fas', 'arrow-left']"></fa-icon>Go back</a>
+  <div class="window row kt-label-bg-color-4">
+    <div class="col-md-12">
+      <div class="row terminal-header kt-label-bg-color-1">
+        <span class="terminal-dots">. . .</span>
+        <h1>
+          My Server #1
+        </h1>
+      </div>
+    </div>
+    <div class="terminal">
+      <p class="command">git clone https://github.com/schacon/ticgit</p>
+      <p class="log">
+      <span>
+        Cloning into 'ticgit'...<br />
+        remote: Reusing existing pack: 1857, done.<br />
+        remote: Total 1857 (delta 0), reused 0 (delta 0)<br />
+        Receiving objects: 100% (1857/1857), 374.35 KiB | 268.00 KiB/s, done.<br />
+        Resolving deltas: 100% (772/772), done.<br />
+        Checking connectivity... done.
+      </span>
+      </p>
+      <p class="command">rm -rf ticgit</p>
+    </div>
+  </div>
+
+</div>

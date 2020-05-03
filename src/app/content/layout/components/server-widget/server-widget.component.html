@@ -1,0 +1,34 @@
+<app-widget *ngIf="server">
+  <app-widget-title>
+    <input
+      [value]="server.name"
+      [id]="'server-name-' + server.id"
+      maxlength="12"
+      (blur)="saveName()"
+      (keydown)="updateInputSize($event)"
+      #nameInput>
+    <p class="hidden-name" #nameElement></p>
+    <ng-container *ngIf="server.id > 0">
+      <app-pulse color="green" *ngIf="isOnline()"></app-pulse>
+      <app-pulse color="red" *ngIf="!isOnline()" [animate]="false"></app-pulse>
+    </ng-container>
+  </app-widget-title>
+  <app-widget-description>Minecraft</app-widget-description>
+  <app-widget-body *ngIf="server.id > 0">
+    <button type="button" class="btn btn-sm btn-icon" (click)="startServer()" [class.disabled]="isOnline()" style="background: #edeff6" tooltipContent="Start server" appTooltip>
+      <fa-icon [icon]="['fas', 'play']"></fa-icon>
+    </button>
+    <button type="button" class="btn btn-sm btn-icon" (click)="stopServer()" [class.disabled]="!isOnline()" style="background: #edeff6" appTooltip tooltipContent="Stop server">
+      <fa-icon [icon]="['fas', 'pause']"></fa-icon>
+    </button>
+    <button type="button" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server folder">
+      <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
+    </button>
+    <button routerLink="/server/123/terminal" type="button" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server terminal">
+      <fa-icon [icon]="['fas', 'terminal']"></fa-icon>
+    </button>
+    <button type="button" class="btn btn-sm btn-icon delete-server" (click)="deleteServer()" appTooltip tooltipContent="Delete server">
+      <fa-icon [icon]="['fas', 'trash']"></fa-icon>
+    </button>
+  </app-widget-body>
+</app-widget>

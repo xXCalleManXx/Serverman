@@ -1,0 +1,55 @@
+
+.pulse {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+@mixin make-pulse-color($name, $color) {
+
+  .pulse-#{$name} {
+    background: $color;
+    box-shadow: 0 0 0 rgba($color, 0.4);
+    &.animate {
+      animation: pulse-#{$name} 2s infinite;
+    }
+  }
+
+
+  @-webkit-keyframes pulse-#{$name} {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba($color, 0.4);
+    }
+    70% {
+      -webkit-box-shadow: 0 0 0 10px rgba($color, 0);
+    }
+    100% {
+      -webkit-box-shadow: 0 0 0 0 rgba($color, 0);
+    }
+  }
+  @keyframes pulse-#{$name} {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba($color, 0.4);
+      box-shadow: 0 0 0 0 rgba($color, 0.4);
+    }
+    70% {
+      -moz-box-shadow: 0 0 0 10px rgba($color, 0);
+      box-shadow: 0 0 0 10px rgba($color, 0);
+    }
+    100% {
+      -moz-box-shadow: 0 0 0 0 rgba($green, 0);
+      box-shadow: 0 0 0 0 rgba($green, 0);
+    }
+  }
+
+
+}
+
+$green: rgb(29, 201, 183);
+$red: rgb(220, 53, 69);
+$orange: rgb(204,169,44);
+
+@include make-pulse-color('green', $green);
+@include make-pulse-color('red', $red);
+@include make-pulse-color('orange', $orange);

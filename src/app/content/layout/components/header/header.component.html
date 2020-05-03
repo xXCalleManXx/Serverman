@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row title-row">
+        <h1 class="col-md-12 text-capitalize">your servers!</h1>
+      </div>
+      <div class="row user-info">
+        <span class="col-4 col-md-12">
+          <strong>Servers count</strong>: {{(servers$|async).length || 0}}
+        </span>
+        <span class="col-4 col-md-12"><strong>Public Ip</strong>: {{publicIp$|async}}</span>
+        <span class="col-4 col-md-12"><strong>Private Ip</strong>: {{privateIp}}</span>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="row">
+        <div class="col-md-12 buttons">
+          <div class="btn-settings" appTooltip tooltipContent="Settings">
+            <fa-icon [icon]="['fas', 'cog']"></fa-icon>
+          </div>
+          <app-button (click)="createServer()" class="add-server" appTooltip tooltipContent="Create new server"></app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

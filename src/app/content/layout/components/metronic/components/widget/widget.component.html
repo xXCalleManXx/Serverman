@@ -1,0 +1,21 @@
+<div class="kt-portlet kt-portlet--height-fluid">
+  <div class="kt-portlet__body">
+
+    <!--begin::Widget -->
+    <div class="kt-widget kt-widget--user-profile-2">
+      <div class="kt-widget__head">
+        <div class="kt-widget__media">
+          <img class="kt-widget__img" src="assets/images/minecraft_grass_block.png" alt="image">
+        </div>
+        <div class="kt-widget__info">
+          <ng-content select="app-widget-title"></ng-content>
+          <ng-content select="app-widget-description"></ng-content>
+        </div>
+      </div>
+      <ng-content select="app-widget-body"></ng-content>
+      <ng-content select="app-widget-footer"></ng-content>
+    </div>
+
+    <!--end::Widget -->
+  </div>
+</div>

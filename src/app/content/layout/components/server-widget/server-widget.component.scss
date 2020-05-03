@@ -1,0 +1,26 @@
+.delete-server {
+  opacity: .4;
+}
+
+app-widget-title {
+  input {
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    &:hover {
+      color: inherit
+    }
+  }
+}
+
+app-widget-body {
+  button:not(:last-child) {
+    margin-right: 4px;
+  }
+}
+
+.hidden-name {
+  position: fixed;
+  display: inline-block;
+  opacity: 0;
+}
