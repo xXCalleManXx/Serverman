@@ -1,25 +1,25 @@
+import { Injectable } from '@nestjs/common';
 import {app, BrowserWindow, screen, ipcMain} from 'electron';
 import * as url from "url";
 import * as path from "path";
 const os = require('os');
 const ifaces = os.networkInterfaces();
 
-class ElectronApp {
+@Injectable()
+export class AppService {
 
   private window: BrowserWindow;
-  private isServing: boolean;
+  private isServing = false;
 
-  constructor(isServing: boolean) {
+  start(isServing: boolean) {
     this.isServing = isServing;
-  }
 
-  start() {
     app.allowRendererProcessReuse = true;
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
-    // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
+    // Added 400 ms to fix the black background issue while using transparent window. More details at https://github.com/electron/electron/issues/15947
     app.on('ready', () => setTimeout(() => this.createWindow(), 400));
 
     // Quit when all windows are closed.
@@ -120,19 +120,4 @@ class ElectronApp {
   }
 
 
-}
-
-const args = process.argv.slice(1),
-  serve = args.some(val => val === '--serve');
-
-const electronApp = new ElectronApp(serve);
-
-try {
-
-  electronApp.start();
-
-} catch (e) {
-  console.error(e);
-  // Catch Error
-  // throw e;
 }
