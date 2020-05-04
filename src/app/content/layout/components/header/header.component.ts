@@ -31,17 +31,16 @@ export class HeaderComponent implements OnInit {
       map(data => (data as any).ip)
     );
 
-    this.ipcService.send('retrieve-private-ip');
-    this.ipcService.on('retrieve-private-ip-reply', (event, args) => {
-      if (!args.privateIp) {
+    this.ipcService.ipcPromise<{privateIp?: {address: string}[]}>('retrieve-private-ip').then(value => {
+      if (!value.privateIp) {
         return;
       }
-      this.privateIp = args.privateIp[0]?.address;
+      this.privateIp = value.privateIp[0]?.address;
     })
   }
 
   createServer() {
-    this.serverService.createNewServer();
+    this.serverService.prepareServerCreation();
   }
 
 }

@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {Server} from "../models/server";
 import {Observable, ReplaySubject} from "rxjs";
 import {shareReplay} from "rxjs/operators";
+import {IpcService} from "./ipc.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +12,7 @@ export class ServerService {
   private subject: ReplaySubject<Server[]>
   private observer: Observable<Server[]>;
 
-  private servers: Server[] = [
-    {
-      id: 1,
-      name: 'My Server #1',
-      processState: 'online'
-    },
-    {
-      id: 2,
-      name: 'My Server #2',
-      processState: 'offline'
-    }
-  ]
+  private servers: Server[] = []
 
   getServerById(id: number): Server|undefined {
     return this.servers.find(value => {
@@ -30,17 +20,24 @@ export class ServerService {
     })
   }
 
+  openServerFolder(serverId: number) {
+    return this.ipcService.ipcPromise('open-server', serverId);
+  }
+
   addServer(server: Server) {
     this.servers.push(server);
     this.subject.next(this.servers);
   }
 
-  removeServerById(id: number) {
+  async removeServerById(id: number) {
+    if (id !== -1) {
+      await this.ipcService.ipcPromise('delete-server', id)
+    }
     this.servers = this.servers.filter(value => value.id != id);
     this.subject.next(this.servers);
   }
 
-  createNewServer() {
+  prepareServerCreation() {
     const server = this.getServerById(-1);
     if (server) {
       return;
@@ -59,6 +56,15 @@ export class ServerService {
     }, 50)
   }
 
+  async createServer(name: string) {
+    const server = await this.ipcService.ipcPromise('create-server', name);
+    console.log({createdServer: server});
+    this.updateServer(-1, {
+      id: server.id,
+      name
+    })
+  }
+
   updateServer(serverId: number, data: Partial<Server>) {
     const index = this.servers.findIndex((server) => server.id === serverId);
 
@@ -75,14 +81,18 @@ export class ServerService {
 
   }
 
-  constructor() {
+  constructor(
+    private ipcService: IpcService
+  ) {
     this.subject = new ReplaySubject<Server[]>();
     this.observer = this.subject.pipe(
       shareReplay()
     );
     this.subject.next(this.servers);
-
-    (window as any).hehe = () => this.servers;
+    this.ipcService.ipcPromise('list-servers').then(servers => {
+      this.servers = servers;
+      this.subject.next(this.servers);
+    });
   }
 
   public getServers(): Observable<Server[]> {

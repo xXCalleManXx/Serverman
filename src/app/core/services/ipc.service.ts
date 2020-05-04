@@ -19,18 +19,14 @@ export class IpcService {
     }
   }
 
-  public on(channel: string, listener): void {
-    if (!this._ipc) {
-      return;
-    }
-    this._ipc.on(channel, listener);
-  }
-
-  public send(channel: string, ...args): void {
-    if (!this._ipc) {
-      return;
-    }
-    this._ipc.send(channel, ...args);
+  async ipcPromise<T = any>(channel: string, ...args: any[]): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this._ipc.send(channel, ...args);
+      this._ipc.once(`${channel}-reply`, (event, args) => {
+        console.log({event, args});
+        resolve(args);
+      })
+    })
   }
 
 }

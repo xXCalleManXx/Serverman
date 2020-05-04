@@ -21,7 +21,7 @@
     <button type="button" class="btn btn-sm btn-icon" (click)="stopServer()" [class.disabled]="!isOnline()" style="background: #edeff6" appTooltip tooltipContent="Stop server">
       <fa-icon [icon]="['fas', 'pause']"></fa-icon>
     </button>
-    <button type="button" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server folder">
+    <button type="button" (click)="openServerFolder()" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server folder">
       <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
     </button>
     <button routerLink="/server/123/terminal" type="button" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server terminal">

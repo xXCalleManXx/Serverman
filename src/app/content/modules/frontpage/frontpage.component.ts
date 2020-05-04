@@ -22,7 +22,7 @@ export class FrontpageComponent implements OnInit {
   }
 
   createServer() {
-    this.serverService.createNewServer();
+    this.serverService.prepareServerCreation();
   }
 
 }

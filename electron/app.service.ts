@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import {app, BrowserWindow, screen, ipcMain} from 'electron';
+import {app, BrowserWindow, screen} from 'electron';
 import * as url from "url";
 import * as path from "path";
-const os = require('os');
-const ifaces = os.networkInterfaces();
+import {ServersService} from "./services/servers.service";
 
 @Injectable()
 export class AppService {
+
+  constructor(
+    private serversService: ServersService
+  ) {
+  }
 
   private window: BrowserWindow;
   private isServing = false;
@@ -38,12 +42,6 @@ export class AppService {
         this.createWindow()
       }
     });
-
-    ipcMain.on('retrieve-private-ip', event => {
-      event.reply('retrieve-private-ip-reply', {
-        privateIp: this.getPrivateIp()
-      })
-    })
   }
 
   createWindow(): BrowserWindow {
@@ -72,7 +70,8 @@ export class AppService {
       win.webContents.openDevTools();
 
       require('electron-reload')(__dirname, {
-        electron: require(`electron`)
+        electron: __non_webpack_require__(`${__dirname}/node_modules/electron`),
+        argv: process.argv.slice(1)
       });
       win.loadURL('http://localhost:4200');
 
@@ -95,26 +94,6 @@ export class AppService {
     this.window = win;
 
     return win;
-  }
-
-
-  getPrivateIp() {
-    const interfaces = []
-    Object.keys(ifaces).forEach(function (ifname) {
-
-      ifaces[ifname].forEach(function (iface) {
-        if ('IPv4' !== iface.family || iface.internal !== false) {
-          // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-          return;
-        }
-
-        interfaces.push({
-          alias: ifname,
-          address: iface.address
-        });
-      });
-    });
-    return interfaces;
   }
 
 

@@ -1,6 +1,7 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {Server} from "../../../../core/models/server";
 import {ServerService} from "../../../../core/services/server.service";
+import {IpcService} from "../../../../core/services/ipc.service";
 
 @Component({
   selector: 'app-server-widget',
@@ -56,11 +57,7 @@ export class ServerWidgetComponent implements OnInit {
         this.serverService.removeServerById(-1);
         return;
       }
-      // alert('Creating server: ' + name);
-      this.serverService.updateServer(-1, {
-        id: Math.floor(Math.random() * 100),
-        name: name
-      })
+      this.serverService.createServer(name)
       console.log('Creating server: ' + name);
     } else {
       console.log('Name: ' + name);
@@ -90,6 +87,10 @@ export class ServerWidgetComponent implements OnInit {
       return false;
     }
     return this.server.processState === 'online'
+  }
+
+  openServerFolder() {
+    return this.serverService.openServerFolder(this.server.id);
   }
 
 }
