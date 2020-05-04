@@ -67,12 +67,14 @@ export class ServerWidgetComponent implements OnInit {
   }
 
   startServer() {
+    this.serverService.startServer(this.server.id);
     this.serverService.updateServer(this.server.id, {
       processState: "online"
     })
   }
 
   stopServer() {
+    this.serverService.stopServer(this.server.id);
     this.serverService.updateServer(this.server.id, {
       processState: "offline"
     })

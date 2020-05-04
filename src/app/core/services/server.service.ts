@@ -81,6 +81,14 @@ export class ServerService {
 
   }
 
+  startServer(serverId: number) {
+    return this.ipcService.ipcPromise('start-server', serverId);
+  }
+
+  stopServer(serverId: number) {
+    return this.ipcService.ipcPromise('stop-server', serverId);
+  }
+
   constructor(
     private ipcService: IpcService
   ) {

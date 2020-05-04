@@ -5,15 +5,26 @@ import * as fs from 'fs';
 import {DatabaseService} from "./database.service";
 import {IpcService} from "./ipc.service";
 import {shell} from 'electron';
+import {MinecraftServer} from "../servers/minecraft.server";
+import {AbstractServer} from "../servers/abstract.server";
 
 @Injectable()
 export class ServersService implements OnModuleInit {
+
+  private serverHandlers: {[serverId: number]: AbstractServer} = {};
 
   constructor(
     private settingsService: SettingsService,
     private databaseService: DatabaseService,
     private ipcService: IpcService
   ) {
+  }
+
+  getServerHandler(server: Server) {
+    if (!this.serverHandlers[server.id]) {
+      this.serverHandlers[server.id] = new MinecraftServer(this.getServerPath(server), server);
+    }
+    return this.serverHandlers[server.id];
   }
 
   onModuleInit(): any {
@@ -28,6 +39,12 @@ export class ServersService implements OnModuleInit {
     })
     this.ipcService.registerListener('open-server', async (serverId) => {
       return this.openServerDir(serverId);
+    })
+    this.ipcService.registerListener('start-server', async (serverId) => {
+      return this.startServerById(serverId)
+    })
+    this.ipcService.registerListener('stop-server', async (serverId) => {
+      return this.stopServerById(serverId)
     })
   }
 
@@ -116,6 +133,33 @@ export class ServersService implements OnModuleInit {
     return i;
   }
 
+  public async startServerById(serverId: number) {
+    const server = this.getServerById(serverId);
+    if (!server) {
+      return;
+    }
+    return this.startServer(server);
+  }
+
+  public async startServer(server: Server) {
+    const handler = this.getServerHandler(server);
+    await handler.postStart()
+    await handler.start();
+  }
+
+  public async stopServerById(serverId: number) {
+    const server = this.getServerById(serverId);
+    if (!server) {
+      return;
+    }
+    return this.stopServer(server);
+  }
+
+  public async stopServer(server: Server) {
+    const handler = this.getServerHandler(server);
+    await handler.stop();
+  }
+
   public createServer(server: Server): Server {
     server.id = this.createServerId();
     if (this.serverFolderExists(server)) {
@@ -124,6 +168,9 @@ export class ServersService implements OnModuleInit {
 
     this.createServerFolder(server);
     this.persistServer(server);
+
+    this.startServer(server);
+
     return server;
   }
 
