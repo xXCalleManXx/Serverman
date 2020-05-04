@@ -39,8 +39,6 @@ export class AppService {
       }
     });
 
-
-
     ipcMain.on('retrieve-private-ip', event => {
       event.reply('retrieve-private-ip-reply', {
         privateIp: this.getPrivateIp()
@@ -74,7 +72,7 @@ export class AppService {
       win.webContents.openDevTools();
 
       require('electron-reload')(__dirname, {
-        electron: require(`${__dirname}/node_modules/electron`)
+        electron: require(`electron`)
       });
       win.loadURL('http://localhost:4200');
 
