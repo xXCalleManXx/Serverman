@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import {app, BrowserWindow, screen} from 'electron';
 import * as url from "url";
 import * as path from "path";
-import {ServersService} from "./services/servers.service";
+import {GetApp} from "./nestjs";
+
+let waited = false;
 
 @Injectable()
 export class AppService {
 
   constructor(
-    private serversService: ServersService
   ) {
   }
 
@@ -28,12 +29,24 @@ export class AppService {
 
     // Quit when all windows are closed.
     app.on('window-all-closed', () => {
+      console.log('DO SOMETHING!');
       // On OS X it is common for applications and their menu bar
       // to stay active until the user quits explicitly with Cmd + Q
       if (process.platform !== 'darwin') {
         app.quit();
       }
     });
+
+    app.on('before-quit', async (event) => {
+      if (waited) {
+        return;
+      }
+      event.preventDefault();
+
+      await GetApp().close();
+      waited = true;
+      app.quit();
+    })
 
     app.on('activate', () => {
       // On OS X it's common to re-create a window in the app when the
@@ -84,7 +97,7 @@ export class AppService {
     }
 
     // Emitted when the window is closed.
-    win.on('closed', () => {
+    win.on('closed', (event) => {
       // Dereference the window object, usually you would store window
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.

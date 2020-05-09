@@ -3,15 +3,20 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as http from "http";
 import * as https from "https";
+import {ServerStatus} from "../interfaces/server-status";
 
 export abstract class AbstractServer {
 
   protected path: string;
-  protected server: Server;
+  private _server: Server;
 
   constructor(path: string, server: Server) {
     this.path = path;
-    this.server = server;
+    this._server = server;
+  }
+
+  get server(): Server {
+    return this._server;
   }
 
   protected async downloadFile(url: string, filename: string) {
@@ -32,5 +37,7 @@ export abstract class AbstractServer {
   public abstract async start(): Promise<void>;
 
   public abstract async stop(): Promise<void>;
+
+  public abstract getServerStatus(): ServerStatus;
 
 }

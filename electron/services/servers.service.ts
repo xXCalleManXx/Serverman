@@ -1,4 +1,4 @@
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Injectable, OnApplicationShutdown, OnModuleDestroy, OnModuleInit} from '@nestjs/common';
 import {Server} from "../interfaces/server";
 import {SettingsService} from "./settings.service";
 import * as fs from 'fs';
@@ -7,9 +7,10 @@ import {IpcService} from "./ipc.service";
 import {shell} from 'electron';
 import {MinecraftServer} from "../servers/minecraft.server";
 import {AbstractServer} from "../servers/abstract.server";
+import {ServerStatus} from "../interfaces/server-status";
 
 @Injectable()
-export class ServersService implements OnModuleInit {
+export class ServersService implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown {
 
   private serverHandlers: {[serverId: number]: AbstractServer} = {};
 
@@ -20,7 +21,23 @@ export class ServersService implements OnModuleInit {
   ) {
   }
 
-  getServerHandler(server: Server) {
+
+  async onModuleDestroy(): Promise<any> {
+    console.log('Stopping servers...');
+    const handlers = Object.values(this.serverHandlers);
+    const promises = []
+    for (const handler of handlers) {
+      promises.push(handler.stop());
+      console.log(`Stopping server #${handler.server.id}...`)
+    }
+    await Promise.all(promises);
+  }
+  async onApplicationShutdown(signal: string) {
+    console.log(`Process is shutting down! ${signal}`);
+    await this.onModuleDestroy();
+  }
+
+  getServerHandler(server: Server): AbstractServer {
     if (!this.serverHandlers[server.id]) {
       this.serverHandlers[server.id] = new MinecraftServer(this.getServerPath(server), server);
     }
@@ -139,6 +156,11 @@ export class ServersService implements OnModuleInit {
       return;
     }
     return this.startServer(server);
+  }
+
+  public getServerStatus(server: Server): ServerStatus {
+    const handler = this.getServerHandler(server);
+    return handler.getServerStatus();
   }
 
   public async startServer(server: Server) {

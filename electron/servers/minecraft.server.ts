@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {AbstractServer} from "./abstract.server";
 import * as child_process from 'child_process';
+import {ServerStatus} from "../interfaces/server-status";
 
 export class MinecraftServer extends AbstractServer {
 
@@ -59,6 +60,13 @@ export class MinecraftServer extends AbstractServer {
       return;
     }
     this.process.kill('SIGTERM');
+  }
+
+  getServerStatus(): ServerStatus {
+    if (this.process?.pid) {
+      return 'online'
+    }
+    return 'offline';
   }
 
 }
