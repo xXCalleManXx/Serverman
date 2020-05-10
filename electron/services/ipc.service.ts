@@ -1,30 +1,33 @@
 import {Injectable, OnModuleInit} from '@nestjs/common';
-import { ipcMain } from 'electron';
 import {UtilService} from "./util.service";
+import {ipcMain, MainProcessIpc} from 'electron-better-ipc';
+import {AppService} from "../app.service";
 
 @Injectable()
 export class IpcService implements OnModuleInit {
 
   constructor(
-    private utilService: UtilService
+    private utilService: UtilService,
+    private appService: AppService
   ) {
   }
 
   onModuleInit(): any {
 
-    this.registerListener('retrieve-private-ip', async () => {
+    ipcMain.answerRenderer('retrieve-private-ip', () => {
       return {
         privateIp: this.utilService.getPrivateIp()
       }
-    })
+    });
 
   }
 
-  registerListener(channel: string, listener: (...args: any[]) => PromiseLike<any>) {
-    ipcMain.on(channel, async (event, args) => {
-      const response = await listener(args);
-      event.reply(`${channel}-reply`, response);
-    })
+  public emit(channel: string, data) {
+    ipcMain.callRenderer(this.appService.window, channel, data);
+  }
+
+  get ipc(): MainProcessIpc {
+    return ipcMain;
   }
 
 }

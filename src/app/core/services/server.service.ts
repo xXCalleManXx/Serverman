@@ -14,6 +14,8 @@ export class ServerService {
 
   private servers: Server[] = []
 
+  private logs: {[serverId: number]: string[]} = {};
+
   getServerById(id: number): Server|undefined {
     return this.servers.find(value => {
       return value.id == id;
@@ -101,6 +103,19 @@ export class ServerService {
       this.servers = servers;
       this.subject.next(this.servers);
     });
+
+    this.ipcService.ipc.answerMain<{serverId: number, line: string}>('server-log-line', ({serverId, line}) => {
+      console.log({serverId, line});
+      if (!this.logs[serverId]) {
+        this.logs[serverId] = [line]
+      } else {
+        this.logs[serverId].push(line);
+      }
+    })
+  }
+
+  public getServerLogs(serverId: number): string[] {
+    return this.logs[serverId] || [];
   }
 
   public getServers(): Observable<Server[]> {

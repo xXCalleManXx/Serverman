@@ -58,6 +58,7 @@
     "@nestjs/platform-express": "^7.0.1",
     "@sentry/browser": "^5.15.4",
     "bootstrap": "^4.4.1",
+    "electron-better-ipc": "1.0.1",
     "lodash": "4.17.15",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

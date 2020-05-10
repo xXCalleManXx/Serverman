@@ -1,11 +1,13 @@
-import {Injectable, OnModuleInit} from '@nestjs/common';
-import { ipcMain } from 'electron';
+import {Injectable} from '@nestjs/common';
 import {UtilService} from "./util.service";
+import * as path from 'path';
 
 export interface AppSettings {
   appName: string;
   databasePath: string;
   serversFolder: string;
+  serverLogsFolder: string;
+  appPath: string;
 }
 
 @Injectable()
@@ -25,8 +27,10 @@ export class SettingsService {
     const config = {} as AppSettings;
 
     config.appName = 'server-manager';
-    config.databasePath = `${this.utilService.getHomeDir()}/${config.appName}/database.json`;
-    config.serversFolder = `${this.utilService.getHomeDir()}/${config.appName}/servers`
+    config.appPath = path.join(this.utilService.getHomeDir(), config.appName);
+    config.databasePath = path.join(config.appPath, 'database.json');
+    config.serversFolder = path.join(config.appPath, 'servers');
+    config.serverLogsFolder = path.join(config.appPath, 'logs');
 
     this._config = config;
 

@@ -8,6 +8,7 @@ import {shell} from 'electron';
 import {MinecraftServer} from "../servers/minecraft.server";
 import {AbstractServer} from "../servers/abstract.server";
 import {ServerStatus} from "../interfaces/server-status";
+import {ServerLogService} from "./server-log.service";
 
 @Injectable()
 export class ServersService implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown {
@@ -17,24 +18,27 @@ export class ServersService implements OnModuleInit, OnModuleDestroy, OnApplicat
   constructor(
     private settingsService: SettingsService,
     private databaseService: DatabaseService,
-    private ipcService: IpcService
+    private ipcService: IpcService,
+    private serverLogService: ServerLogService
   ) {
   }
 
 
   async onModuleDestroy(): Promise<any> {
-    console.log('Stopping servers...');
     const handlers = Object.values(this.serverHandlers);
-    const promises = []
-    for (const handler of handlers) {
-      promises.push(handler.stop());
-      console.log(`Stopping server #${handler.server.id}...`)
+
+    if (handlers.length === 0) {
+      return;
     }
+    this.serverLogService.linesBeforePersist = 0;
+    console.log('Stopping servers...');
+    const promises = handlers.map((handler) => {
+      console.log(`Stopping server #${handler.server.id}...`)
+      return handler.stop();
+    })
     await Promise.all(promises);
-  }
-  async onApplicationShutdown(signal: string) {
-    console.log(`Process is shutting down! ${signal}`);
-    await this.onModuleDestroy();
+
+    console.log('All servers received exit code!');
   }
 
   getServerHandler(server: Server): AbstractServer {
@@ -45,22 +49,22 @@ export class ServersService implements OnModuleInit, OnModuleDestroy, OnApplicat
   }
 
   onModuleInit(): any {
-    this.ipcService.registerListener('create-server', async (name: string) => {
+    this.ipcService.ipc.answerRenderer('create-server', async (name: string) => {
       return this.createServer({name} as Server);
     })
-    this.ipcService.registerListener('list-servers', async () => {
+    this.ipcService.ipc.answerRenderer('list-servers', async () => {
       return this.getServers();
     })
-    this.ipcService.registerListener('delete-server', async (serverId) => {
+    this.ipcService.ipc.answerRenderer<number>('delete-server', async (serverId) => {
       return this.deleteServer(serverId);
     })
-    this.ipcService.registerListener('open-server', async (serverId) => {
+    this.ipcService.ipc.answerRenderer<number>('open-server', async (serverId) => {
       return this.openServerDir(serverId);
     })
-    this.ipcService.registerListener('start-server', async (serverId) => {
+    this.ipcService.ipc.answerRenderer<number>('start-server', async (serverId) => {
       return this.startServerById(serverId)
     })
-    this.ipcService.registerListener('stop-server', async (serverId) => {
+    this.ipcService.ipc.answerRenderer<number>('stop-server', async (serverId) => {
       return this.stopServerById(serverId)
     })
   }
@@ -152,6 +156,7 @@ export class ServersService implements OnModuleInit, OnModuleDestroy, OnApplicat
 
   public async startServerById(serverId: number) {
     const server = this.getServerById(serverId);
+    console.log(`starting server ${serverId}`, server);
     if (!server) {
       return;
     }

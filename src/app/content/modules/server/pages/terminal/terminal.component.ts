@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {ServerService} from "../../../../../core/services/server.service";
 
 @Component({
   selector: 'app-terminal',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TerminalComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private serverService: ServerService
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  get logs(): string[] {
+    return this.serverService.getServerLogs(2);
   }
 
 }

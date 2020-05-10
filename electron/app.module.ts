@@ -5,6 +5,7 @@ import {UtilService} from './services/util.service';
 import {SettingsService} from "./services/settings.service";
 import {DatabaseService} from "./services/database.service";
 import {ServersService} from "./services/servers.service";
+import {ServerLogService} from "./services/server-log.service";
 
 @Module({
   imports: [],
@@ -15,7 +16,8 @@ import {ServersService} from "./services/servers.service";
     UtilService,
     SettingsService,
     DatabaseService,
-    ServersService
+    ServersService,
+    ServerLogService
   ],
 })
 export class AppModule {

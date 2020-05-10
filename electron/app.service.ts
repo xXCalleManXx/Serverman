@@ -13,7 +13,7 @@ export class AppService {
   ) {
   }
 
-  private window: BrowserWindow;
+  private _window: BrowserWindow;
   private isServing = false;
 
   start(isServing: boolean) {
@@ -51,7 +51,7 @@ export class AppService {
     app.on('activate', () => {
       // On OS X it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
-      if (!this.window) {
+      if (!this._window) {
         this.createWindow()
       }
     });
@@ -59,8 +59,8 @@ export class AppService {
 
   createWindow(): BrowserWindow {
 
-    if (this.window) {
-      return this.window;
+    if (this._window) {
+      return this._window;
     }
 
     const size = screen.getPrimaryDisplay().workAreaSize;
@@ -101,13 +101,16 @@ export class AppService {
       // Dereference the window object, usually you would store window
       // in an array if your app supports multi windows, this is the time
       // when you should delete the corresponding element.
-      this.window = null;
+      this._window = null;
     });
 
-    this.window = win;
+    this._window = win;
 
     return win;
   }
 
 
+  get window(): Electron.BrowserWindow {
+    return this._window;
+  }
 }

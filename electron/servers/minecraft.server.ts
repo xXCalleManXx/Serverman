@@ -2,11 +2,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {AbstractServer} from "./abstract.server";
 import * as child_process from 'child_process';
-import {ServerStatus} from "../interfaces/server-status";
 
 export class MinecraftServer extends AbstractServer {
-
-  private process: child_process.ChildProcessWithoutNullStreams;
 
   protected getServerJarFileName(): string {
     return 'server.jar';
@@ -20,15 +17,9 @@ export class MinecraftServer extends AbstractServer {
     }
   }
 
-  public async start() {
-    if (this.process) {
-      console.log('Already started');
-      // Already started!
-      return;
-    }
-    console.log('Starting server');
+  createChildProcess(): Promise<child_process.ChildProcessWithoutNullStreams> | child_process.ChildProcessWithoutNullStreams {
     const memory = '1G'
-    this.process = child_process.spawn(
+    return child_process.spawn(
       'java',
       [
         `-Xms${memory}`,
@@ -41,32 +32,6 @@ export class MinecraftServer extends AbstractServer {
         cwd: this.path
       }
     );
-
-    this.process.stdout.on('data', (chunk: Buffer) => {
-      const line = chunk.toString('utf-8');
-      const obj = {};
-      obj[`Server #${this.server.id}`] = line;
-      console.log(obj);
-    });
-
-    this.process.on("exit", code => {
-      console.log(`Server #${this.server.id} has stopped with code ${code}`);
-      this.process = null;
-    })
-  }
-
-  public async stop() {
-    if (!this.process) {
-      return;
-    }
-    this.process.kill('SIGTERM');
-  }
-
-  getServerStatus(): ServerStatus {
-    if (this.process?.pid) {
-      return 'online'
-    }
-    return 'offline';
   }
 
 }
