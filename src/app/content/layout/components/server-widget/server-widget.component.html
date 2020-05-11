@@ -24,7 +24,7 @@
     <button type="button" (click)="openServerFolder()" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server folder">
       <fa-icon [icon]="['fas', 'folder-open']"></fa-icon>
     </button>
-    <button routerLink="/server/123/terminal" type="button" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server terminal">
+    <button [routerLink]="'/server/' + server.id + '/terminal'" type="button" class="btn btn-sm btn-icon" style="background: #edeff6" appTooltip tooltipContent="Open server terminal">
       <fa-icon [icon]="['fas', 'terminal']"></fa-icon>
     </button>
     <button type="button" class="btn btn-sm btn-icon delete-server" (click)="deleteServer()" appTooltip tooltipContent="Delete server">

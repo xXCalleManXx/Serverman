@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ServerService} from "../../../../../core/services/server.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-terminal',
@@ -10,12 +11,13 @@ export class TerminalComponent implements OnInit {
 
   constructor(
     private serverService: ServerService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
-  get logs(): string[] {
+  getLogs(): Observable<string[]> {
     return this.serverService.getServerLogs(2);
   }
 

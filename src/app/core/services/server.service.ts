@@ -1,7 +1,7 @@
 import {Injectable, OnInit} from '@angular/core';
 import {Server} from "../models/server";
-import {Observable, ReplaySubject} from "rxjs";
-import {shareReplay} from "rxjs/operators";
+import {BehaviorSubject, Observable, ReplaySubject} from "rxjs";
+import {map, shareReplay, tap} from "rxjs/operators";
 import {IpcService} from "./ipc.service";
 
 @Injectable({
@@ -14,7 +14,7 @@ export class ServerService {
 
   private servers: Server[] = []
 
-  private logs: {[serverId: number]: string[]} = {};
+  private logs: BehaviorSubject<{[serverId: number]: string[]}> = new BehaviorSubject<{[p: number]: string[]}>({});
 
   getServerById(id: number): Server|undefined {
     return this.servers.find(value => {
@@ -105,17 +105,24 @@ export class ServerService {
     });
 
     this.ipcService.ipc.answerMain<{serverId: number, line: string}>('server-log-line', ({serverId, line}) => {
-      console.log({serverId, line});
-      if (!this.logs[serverId]) {
-        this.logs[serverId] = [line]
+      const currentVal = this.logs.getValue();
+      if (!currentVal[serverId]) {
+        currentVal[serverId] = [line]
       } else {
-        this.logs[serverId].push(line);
+        currentVal[serverId].push(line);
       }
+      this.logs.next(currentVal);
     })
   }
 
-  public getServerLogs(serverId: number): string[] {
-    return this.logs[serverId] || [];
+  public getServerLogs(serverId: number): Observable<string[]> {
+    return this.logs.pipe(
+      shareReplay(),
+      map(data => {
+        return data[serverId] || []
+      }),
+      tap(logs => console.log({logs})),
+    );
   }
 
   public getServers(): Observable<Server[]> {

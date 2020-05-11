@@ -9,8 +9,8 @@
         </h1>
       </div>
     </div>
-    <div class="terminal">
-      <p class="log" *ngFor="let log of logs">{{log}}</p>
+    <div class="terminal" *ngIf="getLogs()|async as serverLogs">
+      <p class="log" *ngFor="let log of serverLogs">{{log}}</p>
     </div>
   </div>
 
