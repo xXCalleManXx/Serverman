@@ -201,4 +201,7 @@ export class ServersService implements OnModuleInit, OnModuleDestroy, OnApplicat
     return server;
   }
 
+  onApplicationShutdown(signal?: string): any {
+  }
+
 }

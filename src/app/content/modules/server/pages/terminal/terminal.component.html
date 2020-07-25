@@ -5,11 +5,11 @@
       <div class="row terminal-header kt-label-bg-color-1">
         <span class="terminal-dots">. . .</span>
         <h1>
-          My Server #1
+          {{server.name}}
         </h1>
       </div>
     </div>
-    <div class="terminal" *ngIf="getLogs()|async as serverLogs">
+    <div class="terminal" *ngIf="serverLogs$|async as serverLogs">
       <p class="log" *ngFor="let log of serverLogs">{{log}}</p>
     </div>
   </div>

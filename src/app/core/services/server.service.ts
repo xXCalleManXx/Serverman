@@ -117,7 +117,6 @@ export class ServerService {
 
   public getServerLogs(serverId: number): Observable<string[]> {
     return this.logs.pipe(
-      shareReplay(),
       map(data => {
         return data[serverId] || []
       }),
