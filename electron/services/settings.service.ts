@@ -26,7 +26,7 @@ export class SettingsService {
     }
     const config = {} as AppSettings;
 
-    config.appName = 'server-manager';
+    config.appName = 'serverman';
     config.appPath = path.join(this.utilService.getHomeDir(), config.appName);
     config.databasePath = path.join(config.appPath, 'database.json');
     config.serversFolder = path.join(config.appPath, 'servers');

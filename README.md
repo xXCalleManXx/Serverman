@@ -25,7 +25,7 @@ With this sample, you can :
 Clone this repository locally :
 
 ``` bash
-git clone https://github.com/xXCalleManXx/server-manager.git
+git clone https://github.com/xXCalleManXx/serverman.git
 ```
 
 Install dependencies with npm :
